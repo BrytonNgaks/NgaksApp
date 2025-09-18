@@ -1,0 +1,18 @@
+{
+    "name": "mundabenj/dol",
+    "description": "BBIT DevOps Demo of Email Authentication",
+    "autoload": {
+        "psr-4": {
+            "Mundabenj\\Dol\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Munyoiks",
+            "email": "167209005+Munyoiks@users.noreply.github.com"
+        }
+    ],
+    "require": {
+        "phpmailer/phpmailer": "^6.10"
+    }
+}

@@ -1,0 +1,84 @@
+Git Flow of how I achieved the Objectives: 
+1.Sending an email Notification to the user acknowledging that they have signed up
+2. Ensure the database is connected to the UI and displays people signed up 
+3. Validation of the entered email adress (if wrong system crashes ... Can use a try-catch to resolve the crashing so error is shown to the user)
+
+--SETTING UP DATABASE USING MARIADB--
+-Created a database called dol with table called users
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+- Setting email as unique in an attempt to curb duplication of Data.
+--CONFIGURATION (conf.php)--
+Ensured credentials match the one I set in my MariaDB
+$conf['db_host'] = "localhost";
+$conf['db_user'] = "root";
+$conf['db_pass'] = "munyoiks7";
+$conf['db_name'] = "dol";
+
+--DATABASE CONNECTION--
+used mySqli with automatically detecting values .... Incase my MariaDB credentials change this will detect the change
+$mysqli = new mysqli(
+    $conf['db_host'],
+    $conf['db_user'],
+    $conf['db_pass'],
+    $conf['db_name']
+);
+
+--SIGNUP FORM--
+-Created an HTML form to collect name, email, password.
+-Used PHP to handle the form submission.
+<!-- HTML signup form -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Signup</title>
+</head>
+<body>
+    <h2>Signup Form</h2>
+    <form method="post" action="">
+        <label>Name:</label><br>
+        <input type="text" name="name" required><br><br>
+
+        <label>Email:</label><br>
+        <input type="email" name="email" required><br><br>
+
+        <label>Password:</label><br>
+        <input type="password" name="password" required><br><br>
+
+        <input type="submit" value="Sign Up">
+    </form>
+</body>
+</html>
+
+Prevention of Duplicate items.
+$stmt = $mysqli->prepare("SELECT id FROM users WHERE email = ?");
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$stmt->store_result();
+
+if ($stmt->num_rows > 0) {
+    echo "Email already registered.";
+} else {
+    // Insert new user
+}
+
+If no duplication email can be Entered and accepted 
+
+-- Send Verification Email--
+
+After successful signup, sent a welcome/verification email using PHPMailer (or mail()).
+Email looked like:
+You requested an account on {$conf['site_name']}.<br>
+            In order to use this account you need to <a href='$verifyLink'>Click Here</a> to complete the registration process.<br><br>
+            Regards,<br>
+            Systems Admin<br>
+
+ --User List Display--
+
+To satisfy the objective, 
+fetched all users from DB and displayed them in ascending order with numbering
